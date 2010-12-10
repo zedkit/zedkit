@@ -40,5 +40,7 @@ module Zedkit
         rs << "    StRongPassWoRd\n\n"
       end
     end
+    class UnknownCommand < CommandLineError
+    end
   end
 end

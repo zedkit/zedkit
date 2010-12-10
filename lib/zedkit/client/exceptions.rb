@@ -44,6 +44,10 @@ module Zedkit
         case code.to_i
         when 401
           "Unauthorized."
+        when 404
+          "Does Not Exist."
+        when 200
+          "OK."
         else
           "Undefined." end
       end

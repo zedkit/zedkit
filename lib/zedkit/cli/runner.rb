@@ -19,14 +19,14 @@ module Zedkit
   module CLI
     class Runner
       attr_accessor :user_key, :username, :password
-      attr_reader :section, :command
+      attr_reader :section, :command, :items
 
       SECTIONS = ['project']
 
       def initialize
         if !ARGV.empty? && ARGV[0].include?(":")
-          @section = ARGV.split(":")[0]
-          @command = ARGV.split(":")[1]
+          @section = ARGV[0].split(":")[0]
+          @command = ARGV[0].split(":")[1]
         else
           @section = SECTIONS[0]
           ARGV.empty? ? @command = nil : @command = ARGV[0]
@@ -34,6 +34,7 @@ module Zedkit
         ARGV.shift
         begin
           set_credentials if has_section? && has_command?
+          set_items
         rescue Zedkit::CLI::ZedkitError => zke
           puts zke end
       end
@@ -61,9 +62,9 @@ module Zedkit
       def has_items?
         items && items.length > 0
       end
-      def items_to_hash
+      def items_to_key_value_hash
         rh = {}
-        items.map {|i| rh[i[0]] = i[1] }
+        items.each {|item| rh[item.split('=')[0]] = item.split('=')[1] } if has_items?
         rh
       end
 
@@ -73,7 +74,7 @@ module Zedkit
             if has_credentials?
 
               @user_key = Zedkit::Users.verify(:username => username, :password => password)['user_key'] unless has_user_key?
-              commands
+              just_do_it
 
             else
               puts "no creds" end
@@ -83,7 +84,8 @@ module Zedkit
           puts zke end
       end
 
-      def commands
+      protected
+      def just_do_it
         case section
         when SECTIONS[0]
           Zedkit::CLI::Projects.send command.to_sym, :user_key => user_key, :argv => ARGV
@@ -95,7 +97,7 @@ module Zedkit
         << "list                                ## List Zedkit projects\n" \
         << "show <uuid>                         ## Show Zedkit project details\n" \
         << "create <name> key=value [...]       ## Create a new Zedkit project\n" \
-        << "update <uuid>                       ## Update an existing Zedkit project\n" \
+        << "update <uuid> key=value [...]       ## Update an existing Zedkit project\n" \
         << "delete <uuid>                       ## Delete an existing Zedkit project\n\n" \
         << "==\n\n"
       end
@@ -115,9 +117,9 @@ module Zedkit
         else
           raise Zedkit::CLI::MissingCredentials.new(:message => "Missing Zedkit Credentials in ~/.zedkit") end
       end
+      def set_items
+        ARGV.length > 1 ? @items = ARGV.slice(1, ARGV.length - 1) : @items = nil
+      end
     end
   end
 end
-
-
-

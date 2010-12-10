@@ -32,7 +32,7 @@ module Zedkit
           rescue Zedkit::ZedkitError => zke
             puts zke end
         end
-        
+
         def create(opts = {})
           puts "\nThis operation is not yet implemented.\n\n"
         end
@@ -43,6 +43,10 @@ module Zedkit
         
         def delete(opts = {})
           puts "\nThis operation is not yet implemented.\n\n"
+        end
+
+        def method_missing(*args)
+          raise Zedkit::CLI::UnknownCommand.new(:message => "Unknown Command [#{args[0]}]")
         end
 
         protected

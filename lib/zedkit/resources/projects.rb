@@ -33,6 +33,7 @@ module Zedkit
 
       def get(*args)
         zopts = args.extract_zedkit_options!
+        zopts[:uuid] = 'uuid' if zopts[:uuid].nil?
         reshh = Zedkit::Client.get("projects/#{zopts[:uuid]}", zopts[:user_key], zopts.zdelete_keys!(%w(uuid user_key)))
         yield(reshh) if (not reshh.nil?) && block_given?
         reshh

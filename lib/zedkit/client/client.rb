@@ -43,18 +43,20 @@ module Zedkit
           rvss = JSON.parse(http)
           if rvss.is_a?(Hash) && rvss.has_key?('status') && Zedkit.configuration.exceptions?
             raise DataValidationError.new(:http_code => 200, :api_code => rvss['status']['code'],
-                                          :message => rvss['status']['message'], :errors => rvss['errors'])
+                                          :message => rvss['status']['message'] << " [#{method.upcase} #{resource_url(rs)}]",
+                                          :errors => rvss['errors'])
           end
         rescue Net::HTTPBadResponse
           ## TBD
         rescue Nestful::ResourceNotFound
           if Zedkit.configuration.exceptions?
-            raise Zedkit::Client::ResourceNotFound.new(:http_code => 404, :message => "Resource Requested does not Exist")
+            raise Zedkit::Client::ResourceNotFound.new(:http_code => 404,
+                                      :message => "Resource Requested does not Exist [#{method.upcase} #{resource_url(rs)}]")
           end
         rescue Nestful::UnauthorizedAccess
           if Zedkit.configuration.exceptions?
             raise Zedkit::Client::UnauthorizedAccess.new(:http_code => 401,
-                                                         :message => "Access to the Resource Requested was Denied")
+                                :message => "Access Denied to the Resource Requested [#{method.upcase} #{resource_url(rs)}]")
           end
         end
         rvss
