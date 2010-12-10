@@ -42,5 +42,7 @@ module Zedkit
     end
     class UnknownCommand < CommandLineError
     end
+    class MissingParameter < CommandLineError
+    end
   end
 end
