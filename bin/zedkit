@@ -22,5 +22,4 @@ $LOAD_PATH.unshift(lib) if File.directory?(lib) && !$LOAD_PATH.include?(lib)
 require 'zedkit'
 require 'cli/config'
 
-zz = Zedkit::CLI::Runner.new
-zz.go
+Zedkit::CLI::Runner.new.go!

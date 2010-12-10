@@ -68,7 +68,7 @@ module Zedkit
         rh
       end
 
-      def go
+      def go!
         begin
           if has_section? && has_command?
             if has_credentials?
@@ -77,7 +77,7 @@ module Zedkit
               just_do_it
 
             else
-              puts "no creds" end
+              raise Zedkit::CLI::MissingCredentials.new(:message => "Missing Zedkit Credentials") end
           else
             puts map end
         rescue Zedkit::ZedkitError => zke
