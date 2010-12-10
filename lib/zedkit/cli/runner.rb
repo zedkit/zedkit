@@ -21,7 +21,7 @@ module Zedkit
       attr_accessor :user_key, :username, :password
       attr_reader :section, :command, :items
 
-      SECTIONS = ['project']
+      SECTIONS = ['projects']
 
       def initialize
         if !ARGV.empty? && ARGV[0].include?(":")
@@ -86,10 +86,8 @@ module Zedkit
 
       protected
       def just_do_it
-        case section
-        when SECTIONS[0]
-          Zedkit::CLI::Projects.send command.to_sym, :user_key => user_key, :argv => ARGV
-        end
+        klass = Object.const_get('Zedkit').const_get('CLI').const_get(section.capitalize)
+        klass.send command.to_sym, :user_key => user_key, :items => items_to_key_value_hash, :argv => ARGV
       end
       def map
            "\n" \
