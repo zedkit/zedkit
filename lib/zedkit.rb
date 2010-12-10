@@ -64,6 +64,7 @@ require 'zedkit/client/configuration'
 require 'zedkit/client/exceptions'
 require 'zedkit/client/client'
 
+require 'zedkit/cli/bottom'
 require 'zedkit/cli/runner'
 require 'zedkit/cli/exceptions'
 require 'zedkit/cli/projects'

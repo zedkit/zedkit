@@ -17,7 +17,7 @@
 
 module Zedkit
   module CLI
-    class Projects
+    class Projects < Zedkit::CLI::Bottom
       class << self
         def list(opts = {})
           begin
@@ -43,10 +43,6 @@ module Zedkit
         
         def delete(opts = {})
           puts "\nThis operation is not yet implemented.\n\n"
-        end
-
-        def method_missing(*args)
-          raise Zedkit::CLI::UnknownCommand.new(:message => "Unknown Command [#{args[0]}]")
         end
 
         protected
