@@ -1,0 +1,8 @@
+
+= Zedkit
+
+More details TBA.
+
+== Copyright
+
+Copyright (c) 2010 Zedkit. See LICENSE for details. http://zedkit.com.
