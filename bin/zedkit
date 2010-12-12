@@ -16,10 +16,8 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ##
 
-lib = File.expand_path(File.dirname(__FILE__) + '/../lib')
-$LOAD_PATH.unshift(lib) if File.directory?(lib) && !$LOAD_PATH.include?(lib)
-
 require 'zedkit'
-require 'cli/config'
+
+Dir["#{File.dirname(__FILE__)}/../lib/cli/*.rb"].each {|ci| require ci }
 
 Zedkit::CLI::Runner.new.go!

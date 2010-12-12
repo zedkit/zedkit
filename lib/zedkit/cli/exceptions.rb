@@ -18,22 +18,23 @@
 module Zedkit
   module CLI
     class CommandLineError < Zedkit::ZedkitError
-      attr_reader :message
+      attr_reader :locale, :message
 
       def initialize(info = {})
+        @locale = info[:locale]
         @message = info[:message]
       end
 
       def to_s
-        rs  = "\nZedkit CLI ERROR.\n"
-        rs << "  Message => #{message}.\n\n" unless message.nil?
+        rs  = "\n" << Zedkit::CLI.ee(locale, :general, :error) << "\n"
+        rs << "  #{Zedkit::CLI.ee(locale, :general, :message)} => #{message}.\n\n" unless message.nil?
       end
     end
 
     class MissingCredentials < CommandLineError
       def to_s
-        rs  = "\nZedkit CLI ERROR.\n"
-        rs << "  Message => #{message}.\n" unless message.nil?
+        rs  = "\n" << Zedkit::CLI.ee(locale, :general, :error) << "\n"
+        rs << "  #{Zedkit::CLI.ee(locale, :general, :message)} => #{message}.\n" unless message.nil?
         rs << "  You need to setup your Zedkit login or user API key in ~/.zedkit to the use the Zedkit CLI.\n"
         rs << "  Example:\n"
         rs << "    fred@flintstone.com\n"

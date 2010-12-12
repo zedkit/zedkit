@@ -18,12 +18,15 @@
 module Zedkit
   module CLI
     class Runner
-      attr_accessor :user_key, :username, :password
+      attr_accessor :user_key, :username, :password, :locale
       attr_reader :section, :command, :items
 
       SECTIONS = ['projects']
+      CONFIG = "#{File.expand_path('~')}/.zedkit"
 
       def initialize
+        @user_key, @username, @password = nil, nil, nil
+        @locale = :en
         if !ARGV.empty? && ARGV[0].include?(":")
           @section = ARGV[0].split(":")[0]
           @command = ARGV[0].split(":")[1]
@@ -77,9 +80,9 @@ module Zedkit
               just_do_it
 
             else
-              raise Zedkit::CLI::MissingCredentials.new(:message => "Missing Zedkit Credentials") end
+              raise Zedkit::CLI::MissingCredentials.new(:message => Zedkit::CLI.ee(locale, :runner, :credentials)) end
           else
-            puts map end
+            puts commands end
         rescue Zedkit::ZedkitError => zke
           puts zke end
       end
@@ -87,36 +90,41 @@ module Zedkit
       protected
       def just_do_it
         klass = Object.const_get('Zedkit').const_get('CLI').const_get(section.capitalize)
-        klass.send command.to_sym, :user_key => user_key, :items => items_to_key_value_hash, :argv => ARGV
+        klass.send command.to_sym, :locale => locale, :user_key => user_key, :items => items_to_key_value_hash, :argv => ARGV
       end
-      def map
+      def commands
            "\n" \
-        << "== Project Commands\n\n" \
-        << "list                                ## List Zedkit projects\n" \
-        << "show <uuid>                         ## Show Zedkit project details\n" \
-        << "create <name> key=value [...]       ## Create a new Zedkit project\n" \
-        << "update <uuid> key=value [...]       ## Update an existing Zedkit project\n" \
-        << "delete <uuid>                       ## Delete an existing Zedkit project\n\n" \
+        << "== #{Zedkit::CLI.tt(locale, :commands, :projects)}\n\n" \
+        << "list                                # #{Zedkit::CLI.tt(locale, :commands, :projects_list)}\n" \
+        << "show <uuid>                         # #{Zedkit::CLI.tt(locale, :commands, :projects_show)}\n" \
+        << "create <name> key=value [...]       # #{Zedkit::CLI.tt(locale, :commands, :projects_create)}\n" \
+        << "update <uuid> key=value [...]       # #{Zedkit::CLI.tt(locale, :commands, :projects_update)}\n" \
+        << "delete <uuid>                       # #{Zedkit::CLI.tt(locale, :commands, :projects_delete)}\n\n" \
         << "==\n\n"
       end
 
       private
       def set_credentials
-        cf = "#{File.expand_path('~')}/.zedkit"
-        if File.exists?(cf)
-          st = File.open(cf).readlines.map(&:strip).delete_if {|i| i.empty? }
-          if st.length > 1
+        if File.exists?(CONFIG)
+          st = File.open(CONFIG).readlines.map(&:strip).delete_if {|i| i.empty? }
+          if st.length > 2
             @username = st[0]
             @password = st[1]
-            @user_key = nil
           else
-            @user_key = st[0]
-            @username, @password = nil end
+            @user_key = st[0] end
         else
-          raise Zedkit::CLI::MissingCredentials.new(:message => "Missing Zedkit Credentials in ~/.zedkit") end
+          raise Zedkit::CLI::MissingCredentials.new(:message => Zedkit::CLI.ee(locale, :runner, :zedkit_file)) end
       end
       def set_items
         ARGV.length > 1 ? @items = ARGV.slice(1, ARGV.length - 1) : @items = nil
+      end
+      def set_locale
+        if File.exists?(CONFIG)
+          st = File.open(CONFIG).readlines.map(&:strip).delete_if {|i| i.empty? }
+          if st.length >= 2
+            @locale = st[st.length - 1].to_sym if Zedkit::CLI.include?(st[st.length - 1].to_sym)
+          end
+        end
       end
     end
   end

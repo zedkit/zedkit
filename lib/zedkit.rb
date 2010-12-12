@@ -19,8 +19,7 @@ require 'rubygems'
 require 'json'
 require 'nestful'
 
-require 'zedkit/ext/array'
-require 'zedkit/ext/hash'
+Dir["#{File.dirname(__FILE__)}/zedkit/ext/*.rb"].each {|ci| require ci }
 
 module Zedkit
   class << self
@@ -60,14 +59,6 @@ module Zedkit
   end
 end
 
-require 'zedkit/client/configuration'
-require 'zedkit/client/exceptions'
-require 'zedkit/client/client'
-
-require 'zedkit/cli/bottom'
-require 'zedkit/cli/runner'
-require 'zedkit/cli/exceptions'
-require 'zedkit/cli/projects'
-
-require 'zedkit/resources/users'
-require 'zedkit/resources/projects'
+Dir["#{File.dirname(__FILE__)}/zedkit/client/*.rb"].each {|ci| require ci }
+Dir["#{File.dirname(__FILE__)}/zedkit/cli/*.rb"].each {|ci| require ci }
+Dir["#{File.dirname(__FILE__)}/zedkit/resources/*.rb"].each {|ci| require ci }

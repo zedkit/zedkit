@@ -34,54 +34,45 @@ module Zedkit
         end
 
         def create(opts = {})
-          puts "\nThis operation is not yet implemented.\n\n"
+          puts "\n" << Zedkit::CLI.ee(locale, :general, :not_done) << "\n\n"
         end
 
         def update(opts = {})
-          puts "\nThis operation is not yet implemented.\n\n"
+          puts "\n" << Zedkit::CLI.ee(locale, :general, :not_done) << "\n\n"
         end
         
         def delete(opts = {})
-          puts "\nThis operation is not yet implemented.\n\n"
+          puts "\n" << Zedkit::CLI.ee(locale, :general, :not_done) << "\n\n"
         end
 
         protected
         def show_project(project)
           rs  = "\n" \
              << "Zedkit Project:\n" \
-             << "  : Name          : #{project['name']}\n" \
-             << "  : UUID          : #{project['uuid']}\n" \
-             << "  : Location      : #{project['location']}\n" \
-             << "  : Locales\n" \
-             << "  :   Default     : #{project['locales']['default']}\n" \
-             << "  :   Development : #{project['locales']['development']}\n" \
-             << "  :   Production  : #{project['locales']['production']}\n" \
-             << "  : Shelves       : []\n" \
-             << "  : Blogs         : []\n" \
-             << "  : Version       : #{project['version']}\n" \
-             << "  : Created       : #{Time.at(project['created_at']).to_date}\n" \
-             << "  : Updated       : #{Time.at(project['updated_at']).to_date}\n" \
-             << "---------------------\n\n"
+             << "  Name          : #{project['name']}\n" \
+             << "  UUID          : #{project['uuid']}\n" \
+             << "  Location      : #{project['location']}\n" \
+             << "  Locales\n" \
+             << "    Default     : #{project['locales']['default']}\n" \
+             << "    Development : #{project['locales']['development']}\n" \
+             << "    Production  : #{project['locales']['production']}\n" \
+             << "  Shelves       : []\n" \
+             << "  Blogs         : []\n" \
+             << "  Version       : #{project['version']}\n" \
+             << "  Created       : #{Time.at(project['created_at']).to_date}\n" \
+             << "  Updated       : #{Time.at(project['updated_at']).to_date}\n" \
+             << dashes(20) << "\n"
         end
         def show_projects(projects)
-          rs  = line << "| #{'Zedkit Projects'.ljust(118)} |\n" << line
-          rs << "| #{'UUID'.ljust(32)} | #{'Name'.ljust(32)} | #{'Location'.ljust(48)} |\n" << line
-          projects.each {|pp| rs << "| #{uuid(pp)} | #{name(pp)} | #{location(pp)} |\n" }
-          rs << line
-        end
-
-        private
-        def line
-          Array.new(122,'-').join << "\n"
-        end
-        def uuid(pp)
-          pp['project']['uuid'].ljust(32)
-        end
-        def name(pp)
-          pp['project']['name'].ljust(32)
-        end
-        def location(pp)
-          pp['project']['location'].ljust(48)
+          rs  = dashes(122)
+          rs << "| #{'Zedkit Projects'.ljust(118)} |\n"
+          rs << dashes(122)
+          rs << "| #{'UUID'.ljust(32)} | #{'Name'.ljust(32)} | #{'Location'.ljust(48)} |\n"
+          rs << dashes(122)
+          projects.each do |pp|
+            rs << "| #{uuid(pp['project'])} | #{pp['project']['name'].ljust(32)} | #{pp['project']['location'].ljust(48)} |\n"
+          end
+          rs << dashes(122)
         end
       end
     end

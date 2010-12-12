@@ -1,3 +1,10 @@
+##
+# Copyright (c) Zedkit.
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
+# files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy,
+# modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the
+# Software is furnished to do so, subject to the following conditions:
 #
 # The above copyright notice and this permission notice shall be included in all copies or substantial portions of the
 # Software.
@@ -12,7 +19,19 @@ module Zedkit::CLI
   class Bottom
     class << self
       def method_missing(*args)
-        raise Zedkit::CLI::UnknownCommand.new(:message => "Unknown Command [#{args[0]}]")
+        raise Zedkit::CLI::UnknownCommand.new(:message => "#{Zedkit::CLI.ee(args[1][:locale], :general, :unknown)}" \
+                                                                                                << " [#{args[0]}]")
+      end
+
+      protected
+      def dashes(length = 128)
+        Array.new(length, '-').join << "\n"
+      end
+      def uuid(zh)
+        zh['uuid'].ljust(32)
+      end
+      def code(zh, length = 4)
+        zh['code'].center(length)
       end
     end
   end
