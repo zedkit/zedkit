@@ -21,14 +21,20 @@ module Zedkit
       class << self
         def list(opts = {})
           begin
-            puts show_projects Zedkit::Users::Projects.get(:user_key => opts[:user_key])
+            rs  = dashes(122) << "| #{'Zedkit Projects'.ljust(118)} |\n" << dashes(122)
+            rs << "| #{'UUID'.ljust(32)} | #{'Name'.ljust(32)} | #{'Location'.ljust(48)} |\n" << dashes(122)
+            Zedkit::Users::Projects.get(:user_key => opts[:user_key]) do |up|
+              pp  = up['project']
+              rs << "| #{pp['uuid'].ljust(32)} | #{pp['name'].ljust(32)} | #{pp['location'].ljust(48)} |\n"
+            end
+            puts rs << dashes(122)
           rescue Zedkit::ZedkitError => zke
             puts zke end
         end
 
         def show(opts = {})
           begin
-            puts show_project Zedkit::Projects.get(:user_key => opts[:user_key], :uuid => opts[:argv][0])
+            puts Zedkit::Project.new.replace Zedkit::Projects.get(:user_key => opts[:user_key], :uuid => opts[:argv][0])
           rescue Zedkit::ZedkitError => zke
             puts zke end
         end
@@ -43,36 +49,6 @@ module Zedkit
         
         def delete(opts = {})
           puts "\n" << Zedkit::CLI.ee(locale, :general, :not_done) << "\n\n"
-        end
-
-        protected
-        def show_project(project)
-          rs  = "\n" \
-             << "Zedkit Project:\n" \
-             << "  Name          : #{project['name']}\n" \
-             << "  UUID          : #{project['uuid']}\n" \
-             << "  Location      : #{project['location']}\n" \
-             << "  Locales\n" \
-             << "    Default     : #{project['locales']['default']}\n" \
-             << "    Development : #{project['locales']['development']}\n" \
-             << "    Production  : #{project['locales']['production']}\n" \
-             << "  Shelves       : []\n" \
-             << "  Blogs         : []\n" \
-             << "  Version       : #{project['version']}\n" \
-             << "  Created       : #{Time.at(project['created_at']).to_date}\n" \
-             << "  Updated       : #{Time.at(project['updated_at']).to_date}\n" \
-             << dashes(20) << "\n"
-        end
-        def show_projects(projects)
-          rs  = dashes(122)
-          rs << "| #{'Zedkit Projects'.ljust(118)} |\n"
-          rs << dashes(122)
-          rs << "| #{'UUID'.ljust(32)} | #{'Name'.ljust(32)} | #{'Location'.ljust(48)} |\n"
-          rs << dashes(122)
-          projects.each do |pp|
-            rs << "| #{uuid(pp['project'])} | #{pp['project']['name'].ljust(32)} | #{pp['project']['location'].ljust(48)} |\n"
-          end
-          rs << dashes(122)
         end
       end
     end

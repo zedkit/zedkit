@@ -30,7 +30,9 @@ module Zedkit
         when :delete
           rs = submit_request(:delete, resource, zks[:user_key])
         end
-        yield(rs) if rs && block_given?
+        if rs && block_given?
+          rs.is_a?(Array) ? rs.each {|i| yield(i) } : yield(rs)
+        end
         rs
       end
 

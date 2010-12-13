@@ -19,20 +19,20 @@ module Zedkit
   class Projects
     class << self
       def verify(type, key = nil, &block)
-        rshh = nil
+        rs = nil
         case type.to_sym
         when :project
-          rshh = Zedkit::Client.get('projects/verify', nil)
+          rs = Zedkit::Client.get('projects/verify', nil)
         when :locales
-          rshh = Zedkit::Client.get('projects/verify/locales', nil, { :locales_key => key })
+          rs = Zedkit::Client.get('projects/verify/locales', nil, { :locales_key => key })
         end
-        yield(rshh) unless rshh.nil? || !block_given?
-        rshh
+        yield(rs) if rs && block_given?
+        rs
       end
 
-      def get(zks = {}, &block)
-        zks[:uuid] = 'uuid' if zks[:uuid].nil?                                  ## This avoids /projects/[nil] which is a 
-        Zedkit::Client.crud(:get, "projects/#{zks[:uuid]}", zks, [], &block)    ## valid resource to list a user's projects.
+      def get(zks = {}, &block)                                           ## This avoids /projects/[nil] which is a
+        zks[:uuid] = 'uuid' if zks[:uuid].nil?                            ## valid resource to list a user's projects.
+        Zedkit::Client.crud(:get, "projects/#{zks[:uuid]}", zks, [], &block)
       end
 
       def create(zks = {}, &block)

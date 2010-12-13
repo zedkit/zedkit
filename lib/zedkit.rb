@@ -61,4 +61,5 @@ end
 
 Dir["#{File.dirname(__FILE__)}/zedkit/client/*.rb"].each {|ci| require ci }
 Dir["#{File.dirname(__FILE__)}/zedkit/cli/*.rb"].each {|ci| require ci }
+Dir["#{File.dirname(__FILE__)}/zedkit/instances/*.rb"].each {|ci| require ci }
 Dir["#{File.dirname(__FILE__)}/zedkit/resources/*.rb"].each {|ci| require ci }

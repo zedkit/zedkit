@@ -83,10 +83,9 @@ class TestProjects < Test::Unit::TestCase
     assert us.detect {|pu| pu['user']['uuid'] == @uu['uuid'] }
   end
   def test_get_user_connections_in_block
-    Zedkit::Projects::Users.get(:user_key => @uu['user_key'], :project => { :uuid => @uu['projects'][0] }) do |us|
-      assert us.is_a? Array
-      assert_equal 3, us.length
-      assert us.detect {|pu| pu['user']['uuid'] == @uu['uuid'] }
+    Zedkit::Projects::Users.get(:user_key => @uu['user_key'], :project => { :uuid => @uu['projects'][0] }) do |pu|
+      assert_not_nil pu['user']['uuid']
+      assert_not_nil pu['role']
     end
   end
 

@@ -15,18 +15,24 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ##
 
-module Zedkit::CLI
-  class Bottom
-    class << self
-      def method_missing(*args)
-        raise Zedkit::CLI::UnknownCommand.new(:message => "#{Zedkit::CLI.ee(args[1][:locale], :general, :unknown)}" \
-                                                                                                  << " [#{args[0]}]")
-      end
-
-      protected
-      def dashes(length = 128)
-        Array.new(length, '-').join << "\n"
-      end
+module Zedkit
+  class Project < Zedkit::Instance
+    def to_s
+         "\n" \
+      << "Zedkit Project:\n" \
+      << "  Name          : #{self['name']}\n" \
+      << "  UUID          : #{self['uuid']}\n" \
+      << "  Location      : #{self['location']}\n" \
+      << "  Locales\n" \
+      << "    Default     : #{self['locales']['default']}\n" \
+      << "    Development : #{self['locales']['development']}\n" \
+      << "    Production  : #{self['locales']['production']}\n" \
+      << "  Shelves       : []\n" \
+      << "  Blogs         : []\n" \
+      << "  Version       : #{self['version']}\n" \
+      << "  Created       : #{time(self['created_at'])}\n" \
+      << "  Updated       : #{time(self['updated_at'])}\n" \
+      << dashes(20) << "\n"
     end
   end
 end

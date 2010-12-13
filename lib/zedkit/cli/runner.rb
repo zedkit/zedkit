@@ -76,7 +76,9 @@ module Zedkit
           if has_section? && has_command?
             if has_credentials?
 
-              @user_key = Zedkit::Users.verify(:username => username, :password => password)['user_key'] unless has_user_key?
+              unless has_user_key?
+                @user_key = Zedkit::Users.verify(:username => username, :password => password)['user_key']
+              end
               just_do_it
 
             else

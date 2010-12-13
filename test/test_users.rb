@@ -40,8 +40,8 @@ class TestUsers < Test::Unit::TestCase
   end
   def test_projects_list_with_block
     Zedkit::Users::Projects.get(:user_key => @uu['user_key']) do |pp|
-      assert pp.is_a? Array
-      assert_equal 1, pp.length
+      assert_not_nil pp['project']
+      assert_not_nil pp['permissions']
     end
   end
 
