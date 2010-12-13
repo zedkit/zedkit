@@ -18,28 +18,34 @@
 module Zedkit
   module Client
     class << self
+      def crud(method, resource, zks, da, &block)
+        rs = nil
+        case method
+        when :get
+          rs = submit_request(:get, resource, zks[:user_key], zks.zdelete_keys!(%w(user_key uuid) + da))
+        when :create
+          rs = submit_request(:post, resource, zks[:user_key], zks.zdelete_keys!(%w(user_key) + da))
+        when :update
+          rs = submit_request(:put, resource, zks[:user_key], zks.zdelete_keys!(%w(user_key uuid) + da))
+        when :delete
+          rs = submit_request(:delete, resource, zks[:user_key])
+        end
+        yield(rs) if rs && block_given?
+        rs
+      end
+
       def verify(username, password)
         submit_request(:verify, 'users/verify', nil, {}, { :user => username, :password => password })
       end
-
-      def get(rs, user_key, params = {})
-        submit_request(:get, rs, user_key, params)
-      end
-      def create(rs, user_key, params)
-        submit_request(:post, rs, user_key, params)
-      end
-      def update(rs, user_key, params)
-        submit_request(:put, rs, user_key, params)
-      end
-      def delete(rs, user_key)
-        submit_request(:delete, rs, user_key)
+      def get(resource, user_key, params = {})
+        submit_request(:get, resource, user_key, params)
       end
 
       protected
-      def submit_request(method, rs, user_key = nil, params = {}, options = {})
+      def submit_request(method, resource, user_key = nil, params = {}, options = {})
         rvss = nil
         begin
-          http = http_request(method, rs, user_key, params.flatten_zedkit_params!, options)
+          http = http_request(method, resource, user_key, params.flatten_zedkit_params!, options)
           rvss = JSON.parse(http)
           if rvss.is_a?(Hash) && rvss.has_key?('status') && Zedkit.configuration.exceptions?
             raise DataValidationError.new(:http_code => 200, :api_code => rvss['status']['code'],
@@ -48,14 +54,19 @@ module Zedkit
           end
         rescue Net::HTTPBadResponse
           ## TBD
+        rescue Nestful::UnauthorizedAccess
+          if Zedkit.configuration.exceptions?
+            raise Zedkit::Client::UnauthorizedAccess.new(:http_code => 401,
+                                           :message => "User Credentials are Invalid [#{method.upcase} #{resource_url(rs)}]")
+          end
         rescue Nestful::ResourceNotFound
           if Zedkit.configuration.exceptions?
             raise Zedkit::Client::ResourceNotFound.new(:http_code => 404,
                                       :message => "Resource Requested does not Exist [#{method.upcase} #{resource_url(rs)}]")
           end
-        rescue Nestful::UnauthorizedAccess
+        rescue Nestful::ForbiddenAccess
           if Zedkit.configuration.exceptions?
-            raise Zedkit::Client::UnauthorizedAccess.new(:http_code => 401,
+            raise Zedkit::Client::ForbiddenAccess.new(:http_code => 403,
                                 :message => "Access Denied to the Resource Requested [#{method.upcase} #{resource_url(rs)}]")
           end
         end
@@ -63,25 +74,22 @@ module Zedkit
       end
 
       private
-      def http_request(method, rs, uk, params, options)
+      def http_request(method, resource, uk, params, options)
+        full = "#{Zedkit.configuration.api_url}/#{resource}"
         http = nil
         case method
         when :verify
-          http = Nestful.get(resource_url(rs), options.merge({ :params => merged_params(params) }))
+          http = Nestful.get(full, options.merge({ :params => merged_params(params) }))
         when :get
-          http = Nestful.get(resource_url(rs), options.merge({ :params => merged_params(params, uk) }))
+          http = Nestful.get(full, options.merge({ :params => merged_params(params, uk) }))
         when :post
-          http = Nestful.post(resource_url(rs), options.merge({ :format => :form, :params => merged_params(params, uk) }))
+          http = Nestful.post(full, options.merge({ :format => :form, :params => merged_params(params, uk) }))
         when :put
-          http = Nestful.put(resource_url(rs), options.merge({ :format => :form, :params => merged_params(params, uk) }))
+          http = Nestful.put(full, options.merge({ :format => :form, :params => merged_params(params, uk) }))
         when :delete
-          http = Nestful.delete(resource_url(rs), options.merge({ :params => merged_params(params, uk) }))
+          http = Nestful.delete(full, options.merge({ :params => merged_params(params, uk) }))
         end
         http
-      end
-
-      def resource_url(rs)
-        "#{Zedkit.configuration.api_url}/#{rs}"
       end
       def merged_params(params = {}, user_key = nil)
         rh = {}

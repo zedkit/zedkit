@@ -18,37 +18,25 @@
 module Zedkit
   class Users
     class << self
-      def verify(*args)
-        zopts = args.extract_zedkit_options!
-        reshh = Zedkit::Client.verify(zopts[:username], zopts[:password])
-        yield(reshh) if (not reshh.nil?) && block_given?
-        reshh
+      def verify(zks = {}, &block)
+        rs = Zedkit::Client.verify(zks[:username], zks[:password])
+        yield(rs) unless rs.nil? || !block_given?
+        rs
       end
 
-      def get(*args)
-        zopts = args.extract_zedkit_options!
-        reshh = Zedkit::Client.get("users/#{zopts[:uuid]}", zopts[:user_key], zopts.zdelete_keys!(%w(uuid user_key)))
-        yield(reshh) if (not reshh.nil?) && block_given?
-        reshh
+      def get(zks = {}, &block)
+        Zedkit::Client.crud(:get, "users/#{zks[:uuid]}", zks, [], &block)
       end
 
-      def create(*args)
-        zopts = args.extract_zedkit_options!
-        reshh = Zedkit::Client.create('users', zopts[:user_key], zopts.zdelete_keys!(%w(user_key)))
-        yield(reshh) if (not reshh.nil?) && block_given?
-        reshh
-      end
-      
-      def delete(*args)
+      def create(zks = {}, &block)
+        Zedkit::Client.crud(:create, 'users', zks, [], &block)
       end
     end
 
     class Projects
       class << self
-        def get(*args)
-          reshh = Zedkit::Client.get('projects', args.extract_zedkit_options![:user_key])
-          yield(reshh) if (not reshh.nil?) && block_given?
-          reshh
+        def get(zks = {}, &block)
+          Zedkit::Client.crud(:get, 'projects', zks, [], &block)
         end
       end
     end

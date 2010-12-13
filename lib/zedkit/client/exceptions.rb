@@ -31,8 +31,8 @@ module Zedkit
       end
 
       def to_s
-        rs  = "\nZedkit API Error Response.\n"
-        rs << "  HTTP Code => #{http_code}. #{http_string(http_code)}\n"
+        rs  = "\nZedkit API Error Response.\n" \
+           << "  HTTP Code => #{http_code}. #{http_string(http_code)}\n"
         rs << "  API Status Code => #{api_code}.\n" unless api_code.nil?
         rs << "  API Response Message => #{message}.\n" unless message.nil?
         rs << "  API Error Attribute Details => #{@errors['attributes'].map {|k,v| "#{k} => #{v}" }}.\n" unless errors.nil?
@@ -44,6 +44,8 @@ module Zedkit
         case code.to_i
         when 401
           "Unauthorized."
+        when 403
+          "Forbidden."
         when 404
           "Does Not Exist."
         when 200
@@ -53,6 +55,8 @@ module Zedkit
       end
     end
 
+    class UnauthorizedAccess < ClientError
+    end
     class UnauthorizedAccess < ClientError
     end
     class ResourceNotFound < ClientError

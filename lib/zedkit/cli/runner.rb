@@ -89,8 +89,11 @@ module Zedkit
 
       protected
       def just_do_it
-        klass = Object.const_get('Zedkit').const_get('CLI').const_get(section.capitalize)
-        klass.send command.to_sym, :locale => locale, :user_key => user_key, :items => items_to_key_value_hash, :argv => ARGV
+        begin
+          klass = Object.const_get('Zedkit').const_get('CLI').const_get(section.capitalize)
+          klass.send command.to_sym, :locale => locale, :user_key => user_key, :items => items_to_key_value_hash, :argv => ARGV
+        rescue NameError
+          raise Zedkit::CLI::UnknownCommand.new(:message => "#{Zedkit::CLI.ee(locale, :general, :section)} [#{section}]") end
       end
       def commands
            "\n" \

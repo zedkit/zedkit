@@ -21,41 +21,61 @@ class TestUsers < Test::Unit::TestCase
   def test_verify_fails
     assert_nil Zedkit::Users.verify(:username => TEST_GEMS_LOGIN, :password => 'not.the.password')
   end
-
   def test_verify
-    assert_not_nil @uu
     assert @uu.is_a? Hash
     assert_equal 32, @uu['uuid'].length
     assert_equal TEST_GEMS_LOGIN, @uu['email']
+  end
+  def test_verify_with_block
+    Zedkit::Users.verify(:username => TEST_GEMS_LOGIN, :password => TEST_GEMS_PASSWORD) do |uu|
+      assert @uu.is_a? Hash
+      assert_equal 32, @uu['uuid'].length
+    end
+  end
+
+  def test_projects_list
+    pp = Zedkit::Users::Projects.get(:user_key => @uu['user_key'], :whatever => "yo")
+    assert pp.is_a? Array
+    assert_equal 1, pp.length
+  end
+  def test_projects_list_with_block
+    Zedkit::Users::Projects.get(:user_key => @uu['user_key']) do |pp|
+      assert pp.is_a? Array
+      assert_equal 1, pp.length
+    end
   end
 
   def test_get_fails
     assert_nil Zedkit::Users.get(:user_key => 'whatever', :uuid => 'notvaliduuid')
   end
-
   def test_get
-    json = Zedkit::Users.get(:user_key => @uu['user_key'], :uuid => @uu['uuid'])
-    assert_not_nil json
-    assert json.is_a? Hash
-    assert_equal 32, json['uuid'].length
-    assert_equal TEST_GEMS_LOGIN, json['email']
+    uu = Zedkit::Users.get(:user_key => @uu['user_key'], :uuid => @uu['uuid'])
+    assert uu.is_a? Hash
+    assert_equal 32, uu['uuid'].length
+    assert_equal TEST_GEMS_LOGIN, uu['email']
+  end
+  def test_get_with_block
+    Zedkit::Users.get(:user_key => @uu['user_key'], :uuid => @uu['uuid']) do |uu|
+      assert uu.is_a? Hash
+      assert_equal 32, uu['uuid'].length
+    end
   end
 
   def test_create
-    json = Zedkit::Users.create(:user_key => @uu['user_key'],
-                                :user => { :first_name => 'Fred', :surname => 'Flinstone',
-                                           :email => 'gemusertest@zedkit.com', :password => 'password' })
-    assert_not_nil json
-    assert json.is_a? Hash
-    assert_equal 32, json['uuid'].length
-    assert_equal 'Fred', json['first_name']
-    assert_equal 'gemusertest@zedkit.com', json['email']
+    uu = Zedkit::Users.create(:user_key => @uu['user_key'], :user => { :first_name => 'Fred', :surname => 'Flinstone',
+                                                                       :email => 'gemusertest@zedkit.com',
+                                                                       :password => 'password' })
+    assert uu.is_a? Hash
+    assert_equal 32, uu['uuid'].length
+    assert_equal 'Fred', uu['first_name']
+    assert_equal 'gemusertest@zedkit.com', uu['email']
   end
-
-  def test_users_projects_list
-    json = Zedkit::Users::Projects.get(:user_key => @uu['user_key'])
-    assert_not_nil json
-    assert json.is_a? Array
-    assert_equal 1, json.length
+  def test_create_with_block
+    Zedkit::Users.create(:user_key => @uu['user_key'], :user => { :first_name => 'Fred', :surname => 'Flinstone',
+                                                                  :email => 'gemusertest@zedkit.com',
+                                                                  :password => 'password' }) do |uu|
+      assert uu.is_a? Hash
+      assert_equal 32, uu['uuid'].length
+    end
   end
 end

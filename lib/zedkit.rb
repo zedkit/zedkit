@@ -24,20 +24,20 @@ Dir["#{File.dirname(__FILE__)}/zedkit/ext/*.rb"].each {|ci| require ci }
 module Zedkit
   class << self
     def countries(user_key)
-      reshh = Zedkit::Client.get('entities/countries', user_key)
-      yield(reshh) if (not reshh.nil?) && block_given?
-      reshh
+      rs = Zedkit::Client.get('entities/countries', user_key)
+      yield(rs) if rs && block_given?
+      rs
     end
-    def regions(user_key, *args)
-      reshh = Zedkit::Client.get('entities/regions', user_key, args.extract_zedkit_options!)
-      yield(reshh) if (not reshh.nil?) && block_given?
-      reshh
+    def regions(user_key, zks = {})
+      rs = Zedkit::Client.get('entities/regions', user_key, zks)
+      yield(rs) if rs && block_given?
+      rs
     end
 
     def entities(user_key)
-      reshh = Zedkit::Client.get('entities/zedkit', user_key)
-      yield(reshh) if (not reshh.nil?) && block_given?
-      reshh
+      rs = Zedkit::Client.get('entities/zedkit', user_key)
+      yield(rs) if rs && block_given?
+      rs
     end
 
     #

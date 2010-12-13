@@ -47,6 +47,7 @@ module Zedkit::CLI
       :general => {
         :error => "Zedkit CLI ERROR.",
         :message => "Message",
+        :section => "Unknown Section",
         :unknown => "Unknown Command",
         :not_done => "This operation is not yet implemented."
       },
