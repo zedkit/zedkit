@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Zedkit"]
-  s.date = %q{2010-12-11}
+  s.date = %q{2010-12-12}
   s.default_executable = %q{zedkit}
   s.description = %q{gem for Zedkit with all the applicable good stuff easily accessible}
   s.email = %q{support@zedkit.com}
@@ -30,10 +30,10 @@ Gem::Specification.new do |s|
     "lib/zedkit/cli/exceptions.rb",
     "lib/zedkit/cli/projects.rb",
     "lib/zedkit/cli/runner.rb",
+    "lib/zedkit/cli/text.rb",
     "lib/zedkit/client/client.rb",
     "lib/zedkit/client/configuration.rb",
     "lib/zedkit/client/exceptions.rb",
-    "lib/zedkit/ext/array.rb",
     "lib/zedkit/ext/hash.rb",
     "lib/zedkit/resources/projects.rb",
     "lib/zedkit/resources/users.rb",
