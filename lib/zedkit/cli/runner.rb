@@ -67,7 +67,7 @@ module Zedkit
       end
       def items_to_key_value_hash
         rh = {}
-        items.each {|item| rh[item.split('=')[0]] = item.split('=')[1] } if has_items?
+        items.each {|item| rh[item.split('=')[0]] = item.split('=')[1] if item.include?('=') } if has_items?
         rh
       end
 
@@ -75,12 +75,10 @@ module Zedkit
         begin
           if has_section? && has_command?
             if has_credentials?
-
               unless has_user_key?
                 @user_key = Zedkit::Users.verify(:username => username, :password => password)['user_key']
               end
-              just_do_it
-
+              run
             else
               raise Zedkit::CLI::MissingCredentials.new(:message => Zedkit::CLI.ee(locale, :runner, :credentials)) end
           else
@@ -90,12 +88,22 @@ module Zedkit
       end
 
       protected
-      def just_do_it
-        begin
-          klass = Object.const_get('Zedkit').const_get('CLI').const_get(section.capitalize)
-          klass.send command.to_sym, :locale => locale, :user_key => user_key, :items => items_to_key_value_hash, :argv => ARGV
-        rescue NameError
-          raise Zedkit::CLI::UnknownCommand.new(:message => "#{Zedkit::CLI.ee(locale, :general, :section)} [#{section}]") end
+      def me
+        Object.const_get('Zedkit').const_get('CLI')
+      end
+      def run
+        is = items_to_key_value_hash
+        ks = me.const_get(section.capitalize)          
+        case command.to_sym
+        when :list
+          ks.send :before_list, :locale => locale, :items => is, :argv => ARGV if ks.respond_to?(:before_list)
+        when :create
+          ks.send :before_create, :locale => locale, :items => is, :argv => ARGV if ks.respond_to?(:before_create)
+        when :show, :update, :delete
+          if ks.respond_to?(:before_show_update_delete)
+            ks.send :before_show_update_delete, :locale => locale, :items => is, :argv => ARGV end
+        end
+        ks.send command.to_sym, :locale => locale, :user_key => user_key, :items => items_to_key_value_hash, :argv => ARGV
       end
       def commands
            "\n" \

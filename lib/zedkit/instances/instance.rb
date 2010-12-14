@@ -17,6 +17,28 @@
 
 module Zedkit
   class Instance < Hash
+    attr_accessor :user_key, :locale
+    alias_method :uk, :user_key
+    alias_method :lc, :locale
+
+    def initialize(as = {})
+      [:user_key, :locale].each do |k|
+        as.has_key?(k) ? instance_variable_set("@#{k}", as[k]) : instance_variable_set("@#{k}", nil)
+      end
+      set(as[:uuid]) if as.has_key?(:uuid)
+    end
+
+    def set(uuid)
+    end
+    def set_with_hash(hh)
+      replace hh
+    end
+
+    def method_missing(kk)
+      return self[kk.to_s] if self.has_key? kk.to_s
+      super
+    end
+
     protected
     def time(i)
       Time.at(i).to_date

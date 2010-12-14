@@ -44,10 +44,10 @@ module Zedkit
       end
 
       protected
-      def submit_request(method, resource, user_key = nil, params = {}, options = {})
+      def submit_request(method, rs, user_key = nil, params = {}, options = {})
         rvss = nil
         begin
-          http = http_request(method, resource, user_key, params.flatten_zedkit_params!, options)
+          http = http_request(method, resource_url(rs), user_key, params.flatten_zedkit_params!, options)
           rvss = JSON.parse(http)
           if rvss.is_a?(Hash) && rvss.has_key?('status') && Zedkit.configuration.exceptions?
             raise DataValidationError.new(:http_code => 200, :api_code => rvss['status']['code'],
@@ -76,22 +76,24 @@ module Zedkit
       end
 
       private
-      def http_request(method, resource, uk, params, options)
-        full = "#{Zedkit.configuration.api_url}/#{resource}"
+      def http_request(method, rs_url, uk, params, options)
         http = nil
         case method
         when :verify
-          http = Nestful.get(full, options.merge({ :params => merged_params(params) }))
+          http = Nestful.get(rs_url, options.merge({ :params => merged_params(params) }))
         when :get
-          http = Nestful.get(full, options.merge({ :params => merged_params(params, uk) }))
+          http = Nestful.get(rs_url, options.merge({ :params => merged_params(params, uk) }))
         when :post
-          http = Nestful.post(full, options.merge({ :format => :form, :params => merged_params(params, uk) }))
+          http = Nestful.post(rs_url, options.merge({ :format => :form, :params => merged_params(params, uk) }))
         when :put
-          http = Nestful.put(full, options.merge({ :format => :form, :params => merged_params(params, uk) }))
+          http = Nestful.put(rs_url, options.merge({ :format => :form, :params => merged_params(params, uk) }))
         when :delete
-          http = Nestful.delete(full, options.merge({ :params => merged_params(params, uk) }))
+          http = Nestful.delete(rs_url, options.merge({ :params => merged_params(params, uk) }))
         end
         http
+      end
+      def resource_url(rs)
+        "#{Zedkit.configuration.api_url}/#{rs}"
       end
       def merged_params(params = {}, user_key = nil)
         rh = {}

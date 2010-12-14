@@ -51,7 +51,7 @@ module Zedkit::CLI
         :unknown => "Unknown Command",
         :not_done => "This operation is not yet implemented."
       },
-      :projects => {
+      :project => {
         :nil => "Project UUID is nil"
       }
     }

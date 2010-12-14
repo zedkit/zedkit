@@ -42,14 +42,14 @@ module Zedkit
       private
       def http_string(code)
         case code.to_i
+        when 200
+          "OK."
         when 401
           "Unauthorized."
         when 403
           "Forbidden."
         when 404
           "Does Not Exist."
-        when 200
-          "OK."
         else
           "Undefined." end
       end

@@ -20,19 +20,24 @@ module Zedkit
     def to_s
          "\n" \
       << "Zedkit Project:\n" \
-      << "  Name          : #{self['name']}\n" \
-      << "  UUID          : #{self['uuid']}\n" \
-      << "  Location      : #{self['location']}\n" \
+      << "  Name          : #{name}\n" \
+      << "  UUID          : #{uuid}\n" \
+      << "  Location      : #{location}\n" \
       << "  Locales\n" \
-      << "    Default     : #{self['locales']['default']}\n" \
-      << "    Development : #{self['locales']['development']}\n" \
-      << "    Production  : #{self['locales']['production']}\n" \
+      << "    Default     : #{locales['default']}\n" \
+      << "    Development : #{locales['development']}\n" \
+      << "    Production  : #{locales['production']}\n" \
       << "  Shelves       : []\n" \
       << "  Blogs         : []\n" \
-      << "  Version       : #{self['version']}\n" \
-      << "  Created       : #{time(self['created_at'])}\n" \
-      << "  Updated       : #{time(self['updated_at'])}\n" \
+      << "  Version       : #{version}\n" \
+      << "  Created       : #{time(created_at)}\n" \
+      << "  Updated       : #{time(updated_at)}\n" \
       << dashes(20) << "\n"
+    end
+
+    protected
+    def set(uuid)
+      replace Zedkit::Projects.get(:user_key => uk, :locale => lc, :uuid => uuid)
     end
   end
 end

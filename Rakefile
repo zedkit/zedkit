@@ -30,7 +30,7 @@ begin
     gem.authors = ["Zedkit"]
     gem.rubyforge_project = "zedkit"
 
-    gem.files = FileList['[A-Z]*', 'bin/*', 'lib/**/*.rb', 'lib/tasks/*.rake', 'test/**/*.rb']
+    gem.files = FileList['[A-Z]*', 'bin/*', 'lib/**/*.rb', 'test/**/*.rb']
     gem.executables = %w(zedkit)
     gem.default_executable = %q{zedkit}
 
