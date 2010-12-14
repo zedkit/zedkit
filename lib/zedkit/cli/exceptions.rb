@@ -21,8 +21,8 @@ module Zedkit
       attr_reader :locale, :message
 
       def initialize(info = {})
-        @locale = info[:locale]
-        @message = info[:message]
+        @locale  = info[:locale]  || :en
+        @message = info[:message] || nil
       end
 
       def to_s

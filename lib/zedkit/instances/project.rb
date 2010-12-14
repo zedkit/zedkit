@@ -36,8 +36,8 @@ module Zedkit
     end
 
     protected
-    def set(uuid)
-      replace Zedkit::Projects.get(:user_key => uk, :locale => lc, :uuid => uuid)
+    def set_with_uuid(uuid_to_use)
+      replace Zedkit::Projects.get(:user_key => uk, :locale => lc, :uuid => uuid_to_use)
     end
   end
 end

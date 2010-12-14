@@ -25,18 +25,24 @@ module Zedkit
   class << self
     def countries(user_key)
       rs = Zedkit::Client.get('entities/countries', user_key)
-      yield(rs) if rs && block_given?
+      if rs && block_given?
+        rs.is_a?(Array) ? rs.each {|i| yield(i) } : yield(rs)
+      end
       rs
     end
     def regions(user_key, zks = {})
       rs = Zedkit::Client.get('entities/regions', user_key, zks)
-      yield(rs) if rs && block_given?
+      if rs && block_given?
+        rs.is_a?(Array) ? rs.each {|i| yield(i) } : yield(rs)
+      end
       rs
     end
 
     def entities(user_key)
       rs = Zedkit::Client.get('entities/zedkit', user_key)
-      yield(rs) if rs && block_given?
+      if rs && block_given?
+        rs.is_a?(Array) ? rs.each {|i| yield(i) } : yield(rs)
+      end
       rs
     end
 

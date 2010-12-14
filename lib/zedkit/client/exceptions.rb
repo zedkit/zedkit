@@ -24,10 +24,10 @@ module Zedkit
       attr_reader :http_code, :api_code, :message, :errors
 
       def initialize(info = {})
-        @http_code = info[:http_code]
-        @api_code = info[:api_code]
-        @message = info[:message]
-        @errors = info[:errors]
+        @http_code = info[:http_code] || 0
+        @api_code  = info[:api_code]  || nil
+        @message   = info[:message]   || nil
+        @errors    = info[:errors]    || nil
       end
 
       def to_s

@@ -21,15 +21,15 @@ module Zedkit
     alias_method :uk, :user_key
     alias_method :lc, :locale
 
-    def initialize(as = {})
-      [:user_key, :locale].each do |k|
-        as.has_key?(k) ? instance_variable_set("@#{k}", as[k]) : instance_variable_set("@#{k}", nil)
-      end
-      set(as[:uuid]) if as.has_key?(:uuid)
+    def initialize(api = {})
+      @user_key = api[:user_key] || nil
+      @locale   = api[:locale]   || :en
+      if api.has_key?(:owner) && api.has_key?(:uuid)
+        set_with_owner_and_uuid(api[:owner], api[:uuid]) && respond_to?(:set_with_owner_and_uuid)
+      elsif api.has_key?(:uuid) && respond_to?(:uuid)
+        set_with_uuid(api[:uuid]) end
     end
 
-    def set(uuid)
-    end
     def set_with_hash(hh)
       replace hh
     end

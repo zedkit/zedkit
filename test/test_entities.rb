@@ -32,7 +32,11 @@ class TestEntities < Test::Unit::TestCase
     assert cnts.length >= 2
   end
   def test_countries_with_block
-    Zedkit.countries(@uu['user_key']) {|cnts| assert cnts.length >= 2 }
+    Zedkit.countries(@uu['user_key']) do |cnts|
+      assert_not_nil cnts['code']
+      assert_not_nil cnts['name']
+      assert_not_nil cnts['locale']
+    end
   end
 
   def test_regions
@@ -42,30 +46,19 @@ class TestEntities < Test::Unit::TestCase
     assert_not_nil rgss.detect {|region| region['code'] == 'BC' }
   end
   def test_regions_with_block
-    Zedkit.regions(@uu['user_key']) {|rgss| assert_not_nil rgss.detect {|region| region['code'] == 'WA' } }
+    Zedkit.regions(@uu['user_key']) do |rgss|
+      assert_not_nil rgss['code']
+      assert_not_nil rgss['name']
+    end
   end
-
   def test_states_for_usa
     rgss = Zedkit.regions(@uu['user_key'], :country => { :code => 'US' })
     assert rgss.is_a? Array
     assert_nil rgss.detect {|region| region['code'] == 'BC' }
   end
-  def test_states_for_usa_with_block
-    Zedkit.regions(@uu['user_key'], :country => { :code => 'US' }) do |rgss|
-      assert rgss.is_a? Array
-      assert_nil rgss.detect {|region| region['code'] == 'BC' }
-    end
-  end
-
   def test_provinces_for_canada
     rgss = Zedkit.regions(@uu['user_key'], :country => { :code => 'CA' })
     assert rgss.is_a? Array
     assert_nil rgss.detect {|region| region['code'] == 'WA' }
-  end
-  def test_provinces_for_canada_with_block
-    Zedkit.regions(@uu['user_key'], :country => { :code => 'CA' }) do |rgss|
-      assert rgss.is_a? Array
-      assert_nil rgss.detect {|region| region['code'] == 'WA' }
-    end
   end
 end
