@@ -15,17 +15,19 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ##
 
-module Zedkit::CLI
-  class Bottom
-    class << self
-      def method_missing(*args)
-        raise Zedkit::CLI::UnknownCommand.new(:message => "#{Zedkit::CLI.ee(args[1][:locale], :general, :unknown)}" \
-                                                                                                  << " [#{args[0]}]")
-      end
+module Zedkit
+  module CLI
+    class Bottom
+      class << self
+        def method_missing(*args)
+          raise Zedkit::CLI::UnknownCommand.new(:message => "#{Zedkit::CLI.ee(args[1][:locale], :general, :unknown)}" \
+                                                                                                    << " [#{args[0]}]")
+        end
 
-      protected
-      def dashes(length = 128)
-        Array.new(length, '-').join << "\n"
+        protected
+        def dashes(length = 128)
+          Array.new(length, '-').join << "\n"
+        end
       end
     end
   end
