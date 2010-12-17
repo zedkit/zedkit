@@ -45,14 +45,15 @@ module Zedkit
 
       protected
       def submit_request(method, rs, user_key = nil, params = {}, options = {})
-        rvss = nil
+        rh = nil
         begin
-          http = http_request(method, resource_url(rs), user_key, params.flatten_zedkit_params!, options)
-          rvss = JSON.parse(http)
-          if rvss.is_a?(Hash) && rvss.has_key?('status') && Zedkit.configuration.exceptions?
-            raise DataValidationError.new(:http_code => 200, :api_code => rvss['status']['code'],
-                                          :message => rvss['status']['message'] << " [#{method.upcase} #{resource_url(rs)}]",
-                                          :errors => rvss['errors'])
+          http_request(method, resource_url(rs), user_key, params.flatten_zedkit_params!, options) do |nh|
+            rh = JSON.parse(nh)
+            if rh.is_a?(Hash) && rh.has_key?('status') && Zedkit.configuration.exceptions?
+              raise DataValidationError.new(:http_code => 200, :api_code => rh['status']['code'],
+                                            :errors => rh['errors'],
+                                            :message => rh['status']['message'] << " [#{method.upcase} #{resource_url(rs)}]")
+            end
           end
         rescue Net::HTTPBadResponse
           ## TBD
@@ -72,25 +73,23 @@ module Zedkit
                                 :message => "Access Denied to the Resource Requested [#{method.upcase} #{resource_url(rs)}]")
           end
         end
-        rvss
+        rh
       end
 
       private
-      def http_request(method, rs_url, uk, params, options)
-        http = nil
+      def http_request(method, rs_url, uk, params, options, &block)
         case method
         when :verify
-          http = Nestful.get(rs_url, options.merge({ :params => merged_params(params) }))
+          yield Nestful.get(rs_url, options.merge({ :params => merged_params(params) }))
         when :get
-          http = Nestful.get(rs_url, options.merge({ :params => merged_params(params, uk) }))
+          yield Nestful.get(rs_url, options.merge({ :params => merged_params(params, uk) }))
         when :post
-          http = Nestful.post(rs_url, options.merge({ :format => :form, :params => merged_params(params, uk) }))
+          yield Nestful.post(rs_url, options.merge({ :format => :form, :params => merged_params(params, uk) }))
         when :put
-          http = Nestful.put(rs_url, options.merge({ :format => :form, :params => merged_params(params, uk) }))
+          yield Nestful.put(rs_url, options.merge({ :format => :form, :params => merged_params(params, uk) }))
         when :delete
-          http = Nestful.delete(rs_url, options.merge({ :params => merged_params(params, uk) }))
+          Nestful.delete(rs_url, options.merge({ :params => merged_params(params, uk) }))
         end
-        http
       end
       def resource_url(rs)
         "#{Zedkit.configuration.api_url}/#{rs}"

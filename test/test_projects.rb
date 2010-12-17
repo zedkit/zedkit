@@ -114,13 +114,13 @@ class TestProjects < Test::Unit::TestCase
     lk = Zedkit::Users.verify(:username => TEST_GEMS_LACKY, :password => TEST_GEMS_PASSWORD)
     ud = Zedkit::Projects::Users.delete(:user_key => @uu['user_key'], :project => { :uuid => @uu['projects'][0] },
                                                                       :user => { :uuid => lk['uuid'] })
-    assert_equal ud, {}
+    assert_nil ud
   end
   def test_delete_user_connection_with_block
     lk = Zedkit::Users.verify(:username => TEST_GEMS_LACKY, :password => TEST_GEMS_PASSWORD)
     Zedkit::Projects::Users.delete(:user_key => @uu['user_key'], :project => { :uuid => @uu['projects'][0] },
                                                                  :user => { :uuid => lk['uuid'] }) do |ud|
-      assert_equal ud, {}
+      assert_nil ud
     end
   end
 
