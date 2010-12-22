@@ -36,12 +36,15 @@ module Zedkit
       end
 
       def create(zks = {}, &block)
+        Zedkit::Client.crud(:create, 'projects', zks, [], &block)
       end
 
       def update(zks = {}, &block)
+        Zedkit::Client.crud(:update, "projects/#{zks[:uuid]}", zks, [], &block)
       end
       
       def delete(zks = {}, &block)
+        Zedkit::Client.crud(:delete, "projects/#{zks[:uuid]}", zks, [], &block)
       end
     end
 

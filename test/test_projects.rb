@@ -61,18 +61,36 @@ class TestProjects < Test::Unit::TestCase
   end
 
   def test_create
+    pp = Zedkit::Projects.create(:user_key => @uu['user_key'], :project => { :name => "new_project" })
+    assert_not_nil pp['location']
+    assert_equal 'new_project', pp['name']
   end
   def test_create_with_block
+    Zedkit::Projects.create(:user_key => @uu['user_key'], :project => { :name => "new_project" }) do |pp|
+      assert_not_nil pp['location']
+      assert_equal 'new_project', pp['name']
+    end
   end
 
   def test_update
+    pp = Zedkit::Projects.get(:user_key => @uu['user_key'], :uuid => @uu['projects'][0])
+    uu = Zedkit::Projects.update(:user_key => @uu['user_key'], :uuid => pp['uuid'],
+                                 :project => { :location => "new_location" })
+    assert_equal 'http://new_location.zedkit.com', uu['location']
+    assert_equal pp['uuid'], uu['uuid']
   end
   def test_update_with_block
+    Zedkit::Projects.get(:user_key => @uu['user_key'], :uuid => @uu['projects'][0]) do |pp|
+      Zedkit::Projects.update(:user_key => @uu['user_key'], :uuid => pp['uuid'],
+                              :project => { :location => "new_location" }) do |uu|
+        assert_equal 'http://new_location.zedkit.com', uu['location']
+        assert_equal pp['uuid'], uu['uuid']
+      end
+    end
   end
   
   def test_delete
-  end
-  def test_delete_with_block
+    assert_nil Zedkit::Projects.delete(:user_key => @uu['user_key'], :uuid => @uu['projects'][0])
   end
 
 
