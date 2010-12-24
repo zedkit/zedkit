@@ -39,7 +39,7 @@ module Zedkit
       def verify(username, password)
         submit_request(:verify, 'users/verify', nil, {}, { :user => username, :password => password })
       end
-      def get(resource, user_key, params = {})
+      def get(resource, user_key = nil, params = {})
         submit_request(:get, resource, user_key, params)
       end
 

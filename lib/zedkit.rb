@@ -23,23 +23,23 @@ require 'zedkit/ext/hash.rb'
 
 module Zedkit
   class << self
-    def countries(user_key)
-      rs = Zedkit::Client.get('entities/countries', user_key)
+    def countries
+      rs = Zedkit::Client.get('entities/countries')
       if rs && block_given?
         rs.is_a?(Array) ? rs.each {|i| yield(i) } : yield(rs)
       end
       rs
     end
-    def regions(user_key, zks = {})
-      rs = Zedkit::Client.get('entities/regions', user_key, zks)
+    def regions(zks = {})
+      rs = Zedkit::Client.get('entities/regions', nil, zks)
       if rs && block_given?
         rs.is_a?(Array) ? rs.each {|i| yield(i) } : yield(rs)
       end
       rs
     end
 
-    def entities(user_key)
-      rs = Zedkit::Client.get('entities/zedkit', user_key)
+    def entities
+      rs = Zedkit::Client.get('entities/zedkit')
       if rs && block_given?
         rs.is_a?(Array) ? rs.each {|i| yield(i) } : yield(rs)
       end

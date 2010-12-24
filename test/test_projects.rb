@@ -76,14 +76,14 @@ class TestProjects < Test::Unit::TestCase
     pp = Zedkit::Projects.get(:user_key => @uu['user_key'], :uuid => @uu['projects'][0])
     uu = Zedkit::Projects.update(:user_key => @uu['user_key'], :uuid => pp['uuid'],
                                  :project => { :location => "new_location" })
-    assert_equal 'http://new_location.zedkit.com', uu['location']
+    assert_equal 'http://new_location.zedapi.com', uu['location']
     assert_equal pp['uuid'], uu['uuid']
   end
   def test_update_with_block
     Zedkit::Projects.get(:user_key => @uu['user_key'], :uuid => @uu['projects'][0]) do |pp|
       Zedkit::Projects.update(:user_key => @uu['user_key'], :uuid => pp['uuid'],
                               :project => { :location => "new_location" }) do |uu|
-        assert_equal 'http://new_location.zedkit.com', uu['location']
+        assert_equal 'http://new_location.zedapi.com', uu['location']
         assert_equal pp['uuid'], uu['uuid']
       end
     end

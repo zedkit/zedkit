@@ -19,20 +19,26 @@ require 'helper'
 
 class TestEntities < Test::Unit::TestCase
   def test_entities
-    zkes = Zedkit.entities(@uu['user_key'])
+    zkes = Zedkit.entities
+    assert_not_nil zkes['languages']
+    assert_not_nil zkes['locales']
+    assert_not_nil zkes['timezones']
   end
   def test_entities_with_block
-    Zedkit.entities(@uu['user_key']) do |zkes|
+    Zedkit.entities do |zkes|
+      assert_not_nil zkes['languages']
+      assert_not_nil zkes['locales']
+      assert_not_nil zkes['timezones']
     end
   end
 
   def test_countries
-    cnts = Zedkit.countries(@uu['user_key'])
+    cnts = Zedkit.countries
     assert cnts.is_a? Array
     assert cnts.length >= 2
   end
   def test_countries_with_block
-    Zedkit.countries(@uu['user_key']) do |cnts|
+    Zedkit.countries do |cnts|
       assert_not_nil cnts['code']
       assert_not_nil cnts['name']
       assert_not_nil cnts['locale']
@@ -40,24 +46,24 @@ class TestEntities < Test::Unit::TestCase
   end
 
   def test_regions
-    rgss = Zedkit.regions(@uu['user_key'])
+    rgss = Zedkit.regions
     assert rgss.is_a? Array
     assert_not_nil rgss.detect {|region| region['code'] == 'WA' }
     assert_not_nil rgss.detect {|region| region['code'] == 'BC' }
   end
   def test_regions_with_block
-    Zedkit.regions(@uu['user_key']) do |rgss|
+    Zedkit.regions do |rgss|
       assert_not_nil rgss['code']
       assert_not_nil rgss['name']
     end
   end
   def test_states_for_usa
-    rgss = Zedkit.regions(@uu['user_key'], :country => { :code => 'US' })
+    rgss = Zedkit.regions(:country => { :code => 'US' })
     assert rgss.is_a? Array
     assert_nil rgss.detect {|region| region['code'] == 'BC' }
   end
   def test_provinces_for_canada
-    rgss = Zedkit.regions(@uu['user_key'], :country => { :code => 'CA' })
+    rgss = Zedkit.regions(:country => { :code => 'CA' })
     assert rgss.is_a? Array
     assert_nil rgss.detect {|region| region['code'] == 'WA' }
   end
