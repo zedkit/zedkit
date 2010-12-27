@@ -76,5 +76,12 @@ module Zedkit
         end
       end
     end
+    class EmailSettings
+      class << self
+        def get(zks = {}, &block)
+          Zedkit::Client.crud(:get, 'emails/settings', zks, [], &block)
+        end
+      end
+    end
   end
 end

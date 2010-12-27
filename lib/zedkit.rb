@@ -80,5 +80,7 @@ require 'zedkit/instances/project.rb'
 
 require 'zedkit/resources/projects.rb'
 require 'zedkit/resources/users.rb'
+require 'zedkit/resources/emails.rb'
+require 'zedkit/resources/email_settings.rb'
 
 require 'zedkit/rails/sessions' if defined?(Rails::Railtie)

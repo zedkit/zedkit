@@ -17,7 +17,7 @@
 
 require 'helper'
 
-class TestEmails < Test::Unit::TestCase
+class TestEmailSettings < Test::Unit::TestCase
   def test_get
   end
   def test_get_with_block

@@ -15,24 +15,24 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ##
 
-require 'helper'
+module Zedkit
+  class EmailSettings
+    class << self
+      def get(zks = {}, &block)
+        Zedkit::Client.crud(:get, "emails/settings/#{zks[:uuid]}", zks, [], &block)
+      end
 
-class TestEmails < Test::Unit::TestCase
-  def test_get
-  end
-  def test_get_with_block
-  end
+      def create(zks = {}, &block)
+        Zedkit::Client.crud(:create, 'emails/settings', zks, [], &block)
+      end
 
-  def test_create
-  end
-  def test_create_with_block
-  end
-
-  def test_update
-  end
-  def test_update_with_block
-  end
-
-  def test_delete
+      def update(zks = {}, &block)
+        Zedkit::Client.crud(:update, "emails/settings/#{zks[:uuid]}", zks, [], &block)
+      end
+      
+      def delete(zks = {}, &block)
+        Zedkit::Client.crud(:delete, "emails/settings/#{zks[:uuid]}", zks, [], &block)
+      end
+    end
   end
 end
