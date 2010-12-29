@@ -23,14 +23,15 @@ module Zedkit
       set_last_seen if session[:last_seen].nil?
       return true   if session[:last_seen] > (Time.now.to_i - options[:idle_maximum_in_seconds])
       Rails.logger.info "Session has EXPIRED [#{options[:idle_maximum_in_seconds]}]"
+      end_session
       false
     end
     def session_fresh_with_redirect?(options = {})
       options[:idle_maximum_in_seconds] = 900 unless options.has_key? :idle_maximum_in_seconds
       options[:url] = new_session_url unless options.has_key? :url
       return true if session_fresh?(options)
-      end_session
       redirect_to options[:url]
+      end_session
       false
     end
 
