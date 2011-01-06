@@ -31,7 +31,7 @@ module Zedkit
       def create(zks = {}, &block)
         Zedkit::Client.crud(:create, 'users', zks, [], &block)
       end
-      
+
       def update(zks = {}, &block)
       end
     end

@@ -64,14 +64,18 @@ module Zedkit
 
         Rails.logger.info "User Verification Request via Zedkit [#{login.downcase}]"
         Zedkit::Users.verify(:username => login.downcase, :password => password) do |json|
-          @user = json
-          session[:user_json] = @user          ## This does not contain the user's password.
-          cookies[:user_login] = { :value => login.downcase, :expires => 365.days.from_now }
+          Rails.logger.info "User VERIFIED [#{json['uuid']}]"
+          set_session(json, login.downcase)
           return true
         end
 
       else set_user_login end
       false
+    end
+    def set_session(json, login)
+      @user = json
+      session[:user_json] = @user          ## This does not contain the user's password.
+      cookies[:user_login] = { :value => login.downcase, :expires => 365.days.from_now }
     end
     def end_session
       session[:user_json] = nil
