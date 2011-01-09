@@ -19,14 +19,14 @@ module Zedkit
   module CLI
     class Runner
       attr_accessor :user_key, :username, :password, :locale
-      attr_reader :section, :command, :items
+      attr_reader :config, :section, :command, :items
 
       SECTIONS = ['projects']
-      CONFIG = "#{File.expand_path('~')}/.zedkit"
 
       def initialize
         @user_key, @username, @password = nil, nil, nil
         @locale = :en
+        @config = File.expand_path('~') << "/.zedkit"
         if !ARGV.empty? && ARGV[0].include?(":")
           @section = ARGV[0].split(":")[0]
           @command = ARGV[0].split(":")[1]
@@ -118,8 +118,8 @@ module Zedkit
 
       private
       def set_credentials
-        if File.exists?(CONFIG)
-          st = File.open(CONFIG).readlines.map(&:strip).delete_if {|i| i.empty? }
+        if File.exists?(config)
+          st = File.open(config).readlines.map(&:strip).delete_if {|i| i.empty? }
           if st.length > 2
             @username = st[0]
             @password = st[1]
@@ -132,8 +132,8 @@ module Zedkit
         ARGV.length > 1 ? @items = ARGV.slice(1, ARGV.length - 1) : @items = nil
       end
       def set_locale
-        if File.exists?(CONFIG)
-          st = File.open(CONFIG).readlines.map(&:strip).delete_if {|i| i.empty? }
+        if File.exists?(config)
+          st = File.open(config).readlines.map(&:strip).delete_if {|i| i.empty? }
           if st.length >= 2
             @locale = st[st.length - 1].to_sym if Zedkit::CLI.include?(st[st.length - 1].to_sym)
           end
