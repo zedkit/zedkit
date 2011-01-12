@@ -95,13 +95,13 @@ class TestProjects < Test::Unit::TestCase
 
 
   def test_get_user_connections
-    us = Zedkit::Projects::Users.get(:user_key => @uu['user_key'], :project => { :uuid => @uu['projects'][0] })
+    us = Zedkit::Projects::ProjectUsers.get(:user_key => @uu['user_key'], :project => { :uuid => @uu['projects'][0] })
     assert us.is_a? Array
     assert_equal 3, us.length
     assert us.detect {|pu| pu['user']['uuid'] == @uu['uuid'] }
   end
   def test_get_user_connections_in_block
-    Zedkit::Projects::Users.get(:user_key => @uu['user_key'], :project => { :uuid => @uu['projects'][0] }) do |pu|
+    Zedkit::Projects::ProjectUsers.get(:user_key => @uu['user_key'], :project => { :uuid => @uu['projects'][0] }) do |pu|
       assert_not_nil pu['user']['uuid']
       assert_not_nil pu['role']
     end
@@ -114,15 +114,15 @@ class TestProjects < Test::Unit::TestCase
 
   def test_update_user_connection
     lk = Zedkit::Users.verify(:username => TEST_GEMS_LACKY, :password => TEST_GEMS_PASSWORD)
-    uu = Zedkit::Projects::Users.update(:user_key => @uu['user_key'], :project => { :uuid => @uu['projects'][0] },
+    uu = Zedkit::ProjectUsers.update(:user_key => @uu['user_key'], :project => { :uuid => @uu['projects'][0] },
                                                                       :user => { :uuid => lk['uuid'], :role => 'C' })
     assert uu.is_a? Hash
     assert_equal 'C', uu['role']['code']
   end
   def test_update_user_connection_with_block
     lk = Zedkit::Users.verify(:username => TEST_GEMS_LACKY, :password => TEST_GEMS_PASSWORD)
-    Zedkit::Projects::Users.update(:user_key => @uu['user_key'], :project => { :uuid => @uu['projects'][0] },
-                                                                 :user => { :uuid => lk['uuid'], :role => 'C' }) do |uu|
+    Zedkit::ProjectUsers.update(:user_key => @uu['user_key'], :project => { :uuid => @uu['projects'][0] },
+                                                               :user => { :uuid => lk['uuid'], :role => 'C' }) do |uu|
       assert uu.is_a? Hash
       assert_equal 'C', uu['role']['code']
     end
@@ -130,14 +130,14 @@ class TestProjects < Test::Unit::TestCase
 
   def test_delete_user_connection
     lk = Zedkit::Users.verify(:username => TEST_GEMS_LACKY, :password => TEST_GEMS_PASSWORD)
-    ud = Zedkit::Projects::Users.delete(:user_key => @uu['user_key'], :project => { :uuid => @uu['projects'][0] },
+    ud = Zedkit::ProjectUsers.delete(:user_key => @uu['user_key'], :project => { :uuid => @uu['projects'][0] },
                                                                       :user => { :uuid => lk['uuid'] })
     assert_nil ud
   end
   def test_delete_user_connection_with_block
     lk = Zedkit::Users.verify(:username => TEST_GEMS_LACKY, :password => TEST_GEMS_PASSWORD)
-    Zedkit::Projects::Users.delete(:user_key => @uu['user_key'], :project => { :uuid => @uu['projects'][0] },
-                                                                 :user => { :uuid => lk['uuid'] }) do |ud|
+    Zedkit::ProjectUsers.delete(:user_key => @uu['user_key'], :project => { :uuid => @uu['projects'][0] },
+                                                               :user => { :uuid => lk['uuid'] }) do |ud|
       assert_nil ud
     end
   end

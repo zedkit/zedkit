@@ -48,27 +48,28 @@ module Zedkit
       end
     end
 
-    class Users
+    class ProjectKeys
+      class << self
+        def get(zks = {}, &block)
+          Zedkit::Client.crud(:get, "projects/#{zks[:project][:uuid]}/keys", zks, %w(project), &block)
+        end
+      end
+    end
+    class ProjectUsers
       class << self
         def get(zks = {}, &block)
           Zedkit::Client.crud(:get, "projects/#{zks[:project][:uuid]}/users", zks, %w(project), &block)
         end
-
-        def create(zks = {}, &block)
-          Zedkit::Client.crud(:create, "projects/#{zks[:project][:uuid]}/users", zks, %w(project), &block)
-        end
-
-        def update(zks = {}, &block)
-          Zedkit::Client.crud(:update,
-                              "projects/#{zks[:project][:uuid]}/users/#{zks[:user][:uuid]}", zks, %w(project), &block)
-        end
-
-        def delete(zks = {}, &block)
-          Zedkit::Client.crud(:delete, "projects/#{zks[:project][:uuid]}/users/#{zks[:user][:uuid]}", zks, [], &block)
-        end
       end
     end
 
+    class Blogs
+      class << self
+        def get(zks = {}, &block)
+          Zedkit::Client.crud(:get, 'blogs', zks, [], &block)
+        end
+      end
+    end
     class Emails
       class << self
         def get(zks = {}, &block)

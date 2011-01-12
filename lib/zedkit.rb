@@ -79,7 +79,10 @@ require 'zedkit/instances/instance.rb'
 require 'zedkit/instances/project.rb'
 
 require 'zedkit/resources/projects.rb'
+require 'zedkit/resources/project_keys.rb'
+require 'zedkit/resources/project_users.rb'
 require 'zedkit/resources/users.rb'
+require 'zedkit/resources/blogs.rb'
 require 'zedkit/resources/emails.rb'
 require 'zedkit/resources/email_settings.rb'
 
