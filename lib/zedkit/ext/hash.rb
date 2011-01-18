@@ -48,4 +48,11 @@ class Hash
   def zdelete_keys!(zedkeys = [])
     delete_if {|k| zedkeys.include?(k.to_s) }
   end
+
+  def zedkit_object?
+    self.has_key?('uuid') && self['uuid'].is_a?(String) && self['uuid'].length == 32
+  end
+  def has_zedkit_errors?
+    has_key?("status") && self["status"]["result"] == "ERROR"
+  end
 end

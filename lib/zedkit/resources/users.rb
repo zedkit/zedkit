@@ -19,7 +19,7 @@ module Zedkit
   class Users
     class << self
       def verify(zks = {}, &block)
-        rs = Zedkit::Client.verify(zks[:username], zks[:password])
+        rs = Zedkit::Client.verify(zks[:login], zks[:password])
         yield(rs) if rs && block_given?
         rs
       end

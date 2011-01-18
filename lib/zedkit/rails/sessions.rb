@@ -63,7 +63,7 @@ module Zedkit
       when :post
 
         Rails.logger.info "User Verification Request via Zedkit [#{login.downcase}]"
-        Zedkit::Users.verify(:username => login.downcase, :password => password) do |json|
+        Zedkit::Users.verify(:login => login.downcase, :password => password) do |json|
           Rails.logger.info "User VERIFIED [#{json['uuid']}]"
           set_session(json, login.downcase)
           return true
