@@ -18,6 +18,18 @@
 require 'helper'
 
 class TestProjects < Test::Unit::TestCase
+  def test_snapshot
+    sn = Zedkit::Projects.snapshot(:uuid => @uu['projects'][0])
+    assert_not_nil sn['project']
+    assert_not_nil sn['models']
+  end
+  def test_snapshot_with_block
+    Zedkit::Projects.snapshot(:uuid => @uu['projects'][0]) do |sn|
+      assert_not_nil sn['project']
+      assert_not_nil sn['models']
+    end
+  end
+
   def test_does_not_verify_invalid_locales_key
     assert_nil Zedkit::Projects.verify(:locales, 'not.a.valid.key')
   end
@@ -113,31 +125,31 @@ class TestProjects < Test::Unit::TestCase
   end
 
   def test_update_user_connection
-    lk = Zedkit::Users.verify(:username => TEST_GEMS_LACKY, :password => TEST_GEMS_PASSWORD)
+    lk = Zedkit::Users.verify(:login => TEST_GEMS_LACKY, :password => TEST_GEMS_PASSWORD)
     uu = Zedkit::ProjectUsers.update(:user_key => @uu['user_key'], :project => { :uuid => @uu['projects'][0] },
-                                                                      :user => { :uuid => lk['uuid'], :role => 'C' })
+                                                                   :user => { :uuid => lk['uuid'], :role => 'C' })
     assert uu.is_a? Hash
     assert_equal 'C', uu['role']['code']
   end
   def test_update_user_connection_with_block
-    lk = Zedkit::Users.verify(:username => TEST_GEMS_LACKY, :password => TEST_GEMS_PASSWORD)
+    lk = Zedkit::Users.verify(:login => TEST_GEMS_LACKY, :password => TEST_GEMS_PASSWORD)
     Zedkit::ProjectUsers.update(:user_key => @uu['user_key'], :project => { :uuid => @uu['projects'][0] },
-                                                               :user => { :uuid => lk['uuid'], :role => 'C' }) do |uu|
+                                                              :user => { :uuid => lk['uuid'], :role => 'C' }) do |uu|
       assert uu.is_a? Hash
       assert_equal 'C', uu['role']['code']
     end
   end
 
   def test_delete_user_connection
-    lk = Zedkit::Users.verify(:username => TEST_GEMS_LACKY, :password => TEST_GEMS_PASSWORD)
+    lk = Zedkit::Users.verify(:login => TEST_GEMS_LACKY, :password => TEST_GEMS_PASSWORD)
     ud = Zedkit::ProjectUsers.delete(:user_key => @uu['user_key'], :project => { :uuid => @uu['projects'][0] },
-                                                                      :user => { :uuid => lk['uuid'] })
+                                                                   :user => { :uuid => lk['uuid'] })
     assert_nil ud
   end
   def test_delete_user_connection_with_block
-    lk = Zedkit::Users.verify(:username => TEST_GEMS_LACKY, :password => TEST_GEMS_PASSWORD)
+    lk = Zedkit::Users.verify(:login => TEST_GEMS_LACKY, :password => TEST_GEMS_PASSWORD)
     Zedkit::ProjectUsers.delete(:user_key => @uu['user_key'], :project => { :uuid => @uu['projects'][0] },
-                                                               :user => { :uuid => lk['uuid'] }) do |ud|
+                                                              :user => { :uuid => lk['uuid'] }) do |ud|
       assert_nil ud
     end
   end

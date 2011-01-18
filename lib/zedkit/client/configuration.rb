@@ -17,7 +17,7 @@
 
 module Zedkit
   class Configuration
-    attr_accessor :project_key, :locales_key, :ssl, :exceptions, :api_host, :api_port
+    attr_accessor :project_key, :user_key, :locales_key, :ssl, :exceptions, :api_host, :api_port
 
     API_HOSTNAME = 'api.zedapi.com'
     API_PORT = 80
@@ -25,15 +25,17 @@ module Zedkit
     LOCALES_KEY_LENGTH = 18
 
     def initialize
-      @project_key, @locales_key = nil, nil
+      @project_key, @user_key, @locales_key = nil, nil, nil
       @ssl = false
       @exceptions = false
-      @api_host = API_HOSTNAME
-      @api_port = API_PORT
+      @api_host, @api_port = API_HOSTNAME, API_PORT
     end
 
     def has_project_key?
       (not project_key.nil?) && project_key.is_a?(String) && project_key.length == PROJECT_KEY_LENGTH
+    end
+    def has_user_key?
+      (not user_key.nil?) && user_key.is_a?(String)
     end
     def has_locales_key?
       (not locales_key.nil?) && locales_key.is_a?(String) && locales_key.length == LOCALES_KEY_LENGTH

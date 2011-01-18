@@ -18,15 +18,15 @@
 module Zedkit
   module Client
     class << self
-      def crud(method, resource, zks, da, &block)
+      def crud(method, resource, zks, del_keys, &block)
         rs = nil
         case method
         when :get
-          rs = submit_request(:get, resource, zks[:user_key], zks.zdelete_keys!(%w(user_key uuid) + da))
+          rs = submit_request(:get, resource, zks[:user_key], zks.zdelete_keys!(%w(user_key uuid) + del_keys))
         when :create
-          rs = submit_request(:post, resource, zks[:user_key], zks.zdelete_keys!(%w(user_key) + da))
+          rs = submit_request(:post, resource, zks[:user_key], zks.zdelete_keys!(%w(user_key) + del_keys))
         when :update
-          rs = submit_request(:put, resource, zks[:user_key], zks.zdelete_keys!(%w(user_key uuid) + da))
+          rs = submit_request(:put, resource, zks[:user_key], zks.zdelete_keys!(%w(user_key uuid) + del_keys))
         when :delete
           rs = submit_request(:delete, resource, zks[:user_key])
         end
@@ -39,8 +39,12 @@ module Zedkit
       def verify(login, password)
         submit_request(:verify, 'users/verify', nil, {}, { :user => login, :password => password })
       end
-      def get(resource, user_key = nil, params = {})
-        submit_request(:get, resource, user_key, params)
+      def get(resource, user_key = nil, params = {}, &block)
+        rs = submit_request(:get, resource, user_key, params)
+        if rs && block_given?
+          rs.is_a?(Array) ? rs.each {|i| yield(i) } : yield(rs)
+        end
+        rs
       end
 
       protected

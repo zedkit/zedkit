@@ -33,9 +33,7 @@ class Test::Unit::TestCase
   def setup
     Zedkit.configure do |zk|
       zk.project_key = TEST_GEMS_PROJECT_KEY
-      # zk.api_host = '0.0.0.0'
-      # zk.api_port = 5010
     end
-    @uu = Zedkit::Users.verify(:username => TEST_GEMS_LOGIN, :password => TEST_GEMS_PASSWORD)
+    @uu = Zedkit::Users.verify(:login => TEST_GEMS_LOGIN, :password => TEST_GEMS_PASSWORD)
   end
 end

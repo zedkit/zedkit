@@ -29,6 +29,9 @@ module Zedkit
         yield(rs) if rs && block_given?
         rs
       end
+      def snapshot(zks = {}, &block)
+        Zedkit::Client.get("projects/#{zks[:uuid]}/snapshot", nil, {}, &block)
+      end
 
       def get(zks = {}, &block)                                           ## This avoids /projects/[nil] which is a
         zks[:uuid] = 'uuid' if zks[:uuid].nil?                            ## valid resource to list a user's projects.
