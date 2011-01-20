@@ -20,6 +20,7 @@ require 'json'
 require 'nestful'
 
 require 'zedkit/ext/hash.rb'
+require 'zedkit/ext/benchmark.rb'
 
 module Zedkit
   class << self
@@ -83,6 +84,7 @@ require 'zedkit/resources/project_keys.rb'
 require 'zedkit/resources/project_users.rb'
 require 'zedkit/resources/users.rb'
 require 'zedkit/resources/blogs.rb'
+require 'zedkit/resources/blog_posts.rb'
 require 'zedkit/resources/emails.rb'
 require 'zedkit/resources/email_settings.rb'
 

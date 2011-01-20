@@ -15,45 +15,24 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ##
 
-module Zedkit
-  class Configuration
-    attr_accessor :project_key, :user_key, :locales_key, :ssl, :exceptions, :api_host, :api_port, :debug
+module Benchmark
+  class << self
+    def zk_time(method, debug = false)
+      rss = nil
+      rpp = realtime { rss = yield }
+      rtt = ('%.2f' % (rpp * 1000)) << 'ms'
 
-    API_HOSTNAME = 'api.zedapi.com'
-    API_PORT = 80
-    PROJECT_KEY_LENGTH = 18
-    LOCALES_KEY_LENGTH = 18
+      if rss.is_a? Array 
+        lth = rss.length
+      elsif rss.is_a? Hash
+        lth = 1
+      else
+        lth = 0 end
 
-    def initialize
-      @project_key, @user_key, @locales_key = nil, nil, nil
-      @debug = false
-      @ssl = false
-      @exceptions = false
-      @api_host, @api_port = API_HOSTNAME, API_PORT
-    end
-
-    def has_project_key?
-      (not project_key.nil?) && project_key.is_a?(String) && project_key.length == PROJECT_KEY_LENGTH
-    end
-    def has_user_key?
-      (not user_key.nil?) && user_key.is_a?(String)
-    end
-    def has_locales_key?
-      (not locales_key.nil?) && locales_key.is_a?(String) && locales_key.length == LOCALES_KEY_LENGTH
-    end
-
-    def debug?
-      debug
-    end
-    def ssl?
-      ssl
-    end
-    def exceptions?
-      exceptions
-    end
-    
-    def api_url
-      ssl? ? "https://#{api_host}:#{api_port}" : "http://#{api_host}:#{api_port}"
+      if debug && defined?(Rails::Railtie)
+        Rails.logger.info  "Zedkit :#{method.to_s} DONE [#{lth}] (#{rtt})"
+        Rails.logger.debug "Zedkit :#{method.to_s} DONE [#{lth}] -> #{rss.inspect} (#{rtt})"
+      end
     end
   end
 end

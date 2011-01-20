@@ -50,32 +50,35 @@ module Zedkit
       protected
       def submit_request(method, rs, user_key = nil, params = {}, options = {})
         rh = nil
-        begin
-          http_request(method, resource_url(rs), user_key, params.flatten_zedkit_params!, options) do |nh|
-            rh = JSON.parse(nh)
-            if rh.is_a?(Hash) && rh.has_key?('status') && Zedkit.configuration.exceptions?
-              raise DataValidationError.new(:http_code => 200, :api_code => rh['status']['code'],
-                                            :errors => rh['errors'],
-                                            :message => rh['status']['message'] << " [#{method.upcase} #{resource_url(rs)}]")
+        Benchmark.zk_time(method, Zedkit.configuration.debug?) do
+          begin
+            http_request(method, resource_url(rs), user_key, params.flatten_zedkit_params!, options) do |nh|
+              rh = JSON.parse(nh)
+              if rh.is_a?(Hash) && rh.has_key?('status') && Zedkit.configuration.exceptions?
+                raise DataValidationError.new(:http_code => 200, :api_code => rh['status']['code'],
+                                              :errors => rh['errors'],
+                                              :message => rh['status']['message'] << " [#{method.upcase} #{resource_url(rs)}]")
+              end
+            end
+          rescue Net::HTTPBadResponse
+            ## TBD
+          rescue Nestful::UnauthorizedAccess
+            if Zedkit.configuration.exceptions?
+              raise Zedkit::Client::UnauthorizedAccess.new(:http_code => 401,
+                                             :message => "User Credentials are Invalid [#{method.upcase} #{resource_url(rs)}]")
+            end
+          rescue Nestful::ResourceNotFound
+            if Zedkit.configuration.exceptions?
+              raise Zedkit::Client::ResourceNotFound.new(:http_code => 404,
+                                        :message => "Resource Requested does not Exist [#{method.upcase} #{resource_url(rs)}]")
+            end
+          rescue Nestful::ForbiddenAccess
+            if Zedkit.configuration.exceptions?
+              raise Zedkit::Client::ForbiddenAccess.new(:http_code => 403,
+                                  :message => "Access Denied to the Resource Requested [#{method.upcase} #{resource_url(rs)}]")
             end
           end
-        rescue Net::HTTPBadResponse
-          ## TBD
-        rescue Nestful::UnauthorizedAccess
-          if Zedkit.configuration.exceptions?
-            raise Zedkit::Client::UnauthorizedAccess.new(:http_code => 401,
-                                           :message => "User Credentials are Invalid [#{method.upcase} #{resource_url(rs)}]")
-          end
-        rescue Nestful::ResourceNotFound
-          if Zedkit.configuration.exceptions?
-            raise Zedkit::Client::ResourceNotFound.new(:http_code => 404,
-                                      :message => "Resource Requested does not Exist [#{method.upcase} #{resource_url(rs)}]")
-          end
-        rescue Nestful::ForbiddenAccess
-          if Zedkit.configuration.exceptions?
-            raise Zedkit::Client::ForbiddenAccess.new(:http_code => 403,
-                                :message => "Access Denied to the Resource Requested [#{method.upcase} #{resource_url(rs)}]")
-          end
+          rh
         end
         rh
       end
