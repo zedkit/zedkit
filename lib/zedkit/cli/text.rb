@@ -35,7 +35,12 @@ module Zedkit
           :projects_show => "Show Zedkit project details",
           :projects_create => "Create a new Zedkit project",
           :projects_update => "Update an existing Zedkit project",
-          :projects_delete => "Delete an existing Zedkit project"
+          :projects_delete => "Delete an existing Zedkit project",
+          :users_list => "List a project's users",
+          :users_show => "Show user details",
+          :users_create => "Create a new user",
+          :users_update => "Update an existing user",
+          :users_delete => "Delete an existing user"
         }
       }
     }

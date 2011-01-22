@@ -76,7 +76,7 @@ module Zedkit
           if has_section? && has_command?
             if has_credentials?
               unless has_user_key?
-                @user_key = Zedkit::Users.verify(:username => username, :password => password)['user_key']
+                @user_key = Zedkit::Users.verify(:login => username, :password => password)['user_key']
               end
               run
             else
@@ -108,11 +108,17 @@ module Zedkit
       def commands
            "\n" \
         << "== #{Zedkit::CLI.tt(locale, :commands, :projects)}\n\n" \
-        << "list                                # #{Zedkit::CLI.tt(locale, :commands, :projects_list)}\n" \
-        << "show <uuid>                         # #{Zedkit::CLI.tt(locale, :commands, :projects_show)}\n" \
-        << "create <name> key=value [...]       # #{Zedkit::CLI.tt(locale, :commands, :projects_create)}\n" \
-        << "update <uuid> key=value [...]       # #{Zedkit::CLI.tt(locale, :commands, :projects_update)}\n" \
-        << "delete <uuid>                       # #{Zedkit::CLI.tt(locale, :commands, :projects_delete)}\n\n" \
+        << "list                                        # #{Zedkit::CLI.tt(locale, :commands, :projects_list)}\n" \
+        << "show <uuid>                                 # #{Zedkit::CLI.tt(locale, :commands, :projects_show)}\n" \
+        << "create <name> key=value [...]               # #{Zedkit::CLI.tt(locale, :commands, :projects_create)}\n" \
+        << "update <uuid> key=value [...]               # #{Zedkit::CLI.tt(locale, :commands, :projects_update)}\n" \
+        << "delete <uuid>                               # #{Zedkit::CLI.tt(locale, :commands, :projects_delete)}\n\n" \
+        << "== User Commands\n\n" \
+        << "users:list <project uuid>                   # #{Zedkit::CLI.tt(locale, :commands, :users_list)}\n" \
+        << "users:show <project uuid> <login>           # #{Zedkit::CLI.tt(locale, :commands, :users_show)}\n" \
+        << "users:create <project> key=value [...]      # #{Zedkit::CLI.tt(locale, :commands, :users_create)}\n" \
+        << "users:update <uuid> key=value [...]         # #{Zedkit::CLI.tt(locale, :commands, :users_update)}\n" \
+        << "users:delete <uuid>                         # #{Zedkit::CLI.tt(locale, :commands, :users_delete)}\n\n" \
         << "==\n\n"
       end
 
