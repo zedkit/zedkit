@@ -37,8 +37,8 @@ module Zedkit
 
     class Posts
       class << self
-        def posts(zks = {}, &block)
-          Zedkit::Client.crud(:get, "blogs/#{zks[:blog][:uuid]}/posts", zks, %w(blog), &block)
+        def get(zks = {}, &block)
+          Zedkit::Client.crud(:get, 'posts', zks, [], &block)
         end
       end
     end

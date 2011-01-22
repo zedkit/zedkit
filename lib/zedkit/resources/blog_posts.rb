@@ -27,7 +27,7 @@ module Zedkit
       end
 
       def update(zks = {}, &block)
-        Zedkit::Client.crud(:update, "posts/#{zks[:uuid]}", zks, %(uuid), &block)
+        Zedkit::Client.crud(:update, "posts/#{zks[:uuid]}", zks, [], &block)
       end
 
       def delete(zks = {}, &block)
