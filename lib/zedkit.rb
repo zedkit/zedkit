@@ -19,6 +19,7 @@ require 'rubygems'
 require 'json'
 require 'nestful'
 
+require 'zedkit/ext/array.rb'
 require 'zedkit/ext/hash.rb'
 require 'zedkit/ext/benchmark.rb'
 
@@ -85,6 +86,8 @@ require 'zedkit/resources/project_users.rb'
 require 'zedkit/resources/users.rb'
 require 'zedkit/resources/blogs.rb'
 require 'zedkit/resources/blog_posts.rb'
+require 'zedkit/resources/shorteners.rb'
+require 'zedkit/resources/shortened_urls.rb'
 require 'zedkit/resources/emails.rb'
 require 'zedkit/resources/email_settings.rb'
 
