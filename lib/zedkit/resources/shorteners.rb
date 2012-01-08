@@ -1,4 +1,4 @@
-##
+#
 # Copyright (c) Zedkit.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
@@ -13,7 +13,7 @@
 # WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
 # COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-##
+#
 
 module Zedkit
   class Shorteners
@@ -23,7 +23,7 @@ module Zedkit
       end
 
       def create(zks = {}, &block)
-        Zedkit::Client.crud(:create, 'shorteners', zks, [], &block)
+        Zedkit::Client.crud(:create, "shorteners", zks, [], &block)
       end
 
       def update(zks = {}, &block)
@@ -38,7 +38,7 @@ module Zedkit
     class Urls
       class << self
         def get(zks = {}, &block)
-          Zedkit::Client.crud(:get, 'urls', zks, [], &block)
+          Zedkit::Client.crud(:get, "urls", zks, [], &block)
         end
       end
     end

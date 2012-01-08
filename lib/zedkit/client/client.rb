@@ -1,4 +1,4 @@
-##
+#
 # Copyright (c) Zedkit.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
@@ -13,7 +13,7 @@
 # WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
 # COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-##
+#
 
 module Zedkit
   module Client
@@ -37,7 +37,7 @@ module Zedkit
       end
 
       def verify(login, password)
-        submit_request(:verify, 'users/verify', nil, {}, { :user => login, :password => password })
+        submit_request(:verify, "users/verify", nil, {}, { :user => login, :password => password })
       end
       def get(resource, user_key = nil, params = {}, &block)
         rs = submit_request(:get, resource, user_key, params)
@@ -54,10 +54,10 @@ module Zedkit
           begin
             http_request(method, resource_url(rs), user_key, params.flatten_zedkit_params!, options) do |nh|
               rh = JSON.parse(nh)
-              if rh.is_a?(Hash) && rh.has_key?('status') && Zedkit.configuration.exceptions?
-                raise DataValidationError.new(:http_code => 200, :api_code => rh['status']['code'],
-                                              :errors => rh['errors'],
-                                              :message => rh['status']['message'] << " [#{method.upcase} #{resource_url(rs)}]")
+              if rh.is_a?(Hash) && rh.has_key?("status") && Zedkit.configuration.exceptions?
+                raise DataValidationError.new(:http_code => 200, :api_code => rh["status"]["code"],
+                                              :errors => rh["errors"],
+                                              :message => rh["status"]["message"] << " [#{method.upcase} #{resource_url(rs)}]")
               end
             end
           rescue Net::HTTPBadResponse

@@ -1,4 +1,4 @@
-##
+#
 # Copyright (c) Zedkit.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
@@ -13,9 +13,9 @@
 # WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
 # COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-##
+#
 
-##
+#
 # We want to transform something like this:
 #   { :user => { :email => "whatever@zedkit.com", :password => "pwd", :first_name => "Fred", :surname => "Flintstone" } }
 #
@@ -32,7 +32,7 @@
 # FYI, the API's backend controllers do NOT use mass assignment for attributes submitted, EVER. Submitting anything other
 # than documented object data items for each API method has no negative impact. Inapplicable attributes, or nefarious
 # submissions on update, such as user[uuid], are simply ignored.
-##
+#
 
 class Hash
   def flatten_zedkit_params!                      ## The implementation of this did not require a staging hash until
